@@ -9,5 +9,8 @@ namespace WebApp.Interfaces
     public interface IUserLogic
     {       
         Task<List<User>> GetAllUsers();
+        Task<User> GetUserSqlById(int id);
+        Task<UserAzureAdd> GetUserAddByEmail(string email);
+        
     }
 }

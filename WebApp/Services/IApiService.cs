@@ -10,5 +10,6 @@ namespace WebApp.Services
    public interface IApiService
     {
         Task<string> GetApi(string url);
+        Task<string> GetApiUserAdd(string url);
     }
 }

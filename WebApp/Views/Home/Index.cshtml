@@ -2,12 +2,28 @@
     ViewData["Title"] = "Trang chủ";
 }
 @model IEnumerable<WebAPI.Models.User>
-<div class="container-fluid">
 
+<ul class="navbar-nav">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <li class="nav-item">
+            <span class="navbar-text text-dark">Hello @User.Identity.Name!</span>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="AzureAD" asp-controller="Account" asp-action="SignOut">Sign out</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="AzureAD" asp-controller="Account" asp-action="SignIn">Sign in</a>
+        </li>
+    }
+</ul>
+
+<div class="container-fluid">
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">User</h1>
-   
-
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -24,7 +40,7 @@
                             <th>Address</th>
                             <th>ContactNumber</th>
                             <th>Role</th>
-                          
+                            <th>Chức năng</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -35,24 +51,120 @@
                             <th>Address</th>
                             <th>ContactNumber</th>
                             <th>Role</th>
+                            <th>Chức năng</th>
+
                         </tr>
                     </tfoot>
                     <tbody>
                         @foreach (var item in Model)
                         {
-                        <tr>
-                            <td>@item.Id</td>
-                            <td>@item.Name</td>
-                            <td>@item.Email</td>
-                            <td>@item.Address</td>
-                            <td>@item.ContactNumber</td>
-                            <td>@item.Role.Name</td>
-                        </tr>
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>@item.Email</td>
+                                <td>@item.Address</td>
+                                <td>@item.ContactNumber</td>
+                                <td>@item.Role.Name</td>
+                                <td>
+                                    <a data-id="@item.Id" data-bind="@item.Email"  class="btn btnDetail btn-sm btn-success">Detail</a>
+                                </td>
+                            </tr>
                         }
-
-
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-3">
+    <!-- The Modal -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Thông tin user</h4>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container mt-3">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#home">User SQL</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btnEmail" data-toggle="tab" href="#home1">User Email</a>
+                            </li>
+
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div id="home" class="container tab-pane active">
+                                <table class="table table-light mt-2">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>ContactNumber</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="tdId"></td>
+                                            <td id="tdName"></td>
+                                            <td id="tdEmail"></td>
+                                            <td id="tdNumber"></td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div id="home1" class="container tab-pane fade">
+                                <table class="table table-light mt-2">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Name</th>  
+                                            <th>Principal Name</th>
+                                            <th>User type</th>
+                                            <th>Company name</th>
+                                            <th>Job title</th>
+                                            <th>Department</th>
+                                            <th>Employee Id</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th id="ADDName">Name</th>
+                                            <th id="ADDPrincipal">Principal Name</th>
+                                            <th id="ADDUser">User type</th>
+                                            <th id="ADDCompany">Company name</th>
+                                            <th id="ADDJob">Job title</th>
+                                            <th id="ADDepartment">Department</th>
+                                            <th id="ADDEmployee">Employee Id</th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
             </div>
         </div>
     </div>

@@ -9,5 +9,6 @@ namespace WebApp.Common.ConnectionApi
     {
         public const string ConnectApi = "ConnectApi";
         public string UrlApi { get; set; }
+        public string UrlUserAdd { get; set; }
     }
 }

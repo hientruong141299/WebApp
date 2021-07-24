@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +16,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.ADDAzure;
+using WebAPI.Common.Configuration;
+using WebAPI.InterfaceADDAzure;
 using WebAPI.Models;
+using WebAPI.Services;
+using UserReadADDAzure = WebAPI.Services.UserReadADDAzure;
 
 namespace WebAPI
 {
@@ -28,10 +37,22 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
+            //   .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+            //services.AddControllers(options =>
+            //{
+            //    var policy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+            //    options.Filters.Add(new AuthorizeFilter(policy));
+            //});
             services.AddControllers();
             services.AddDbContext<DatabaseContext>(options =>
              options.UseSqlServer(
                  Configuration.GetConnectionString("DefaultConnection")));
+            services.Configure<GetConnectADDAzure>(Configuration.GetSection(GetConnectADDAzure.ConnectAzureAD));
+            services.AddSingleton<IUserADDAzure, GraphApiClientDirect>();
+            services.AddSingleton<IApiPermissions, UserReadADDAzure>();
             var contact = new OpenApiContact()
             {
                 Name = "Hien Truong",
@@ -69,7 +90,7 @@ namespace WebAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseSwagger();
             app.UseSwaggerUI(c =>

@@ -1,14 +1,13 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using WebAPI.Controllers;
 using WebApp.BusinessLogic;
 using WebApp.Common.ConnectionApi;
 using WebApp.Interfaces;
@@ -28,11 +27,21 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
+              .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+            services.AddControllersWithViews(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
             services.AddHttpClient();
             services.Configure<GetConnectApi>(Configuration.GetSection(GetConnectApi.ConnectApi));
             services.AddSingleton<IApiService, ApiService>();
             services.AddSingleton<IUserLogic, UserLogic>();
+           
+          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,7 +61,7 @@ namespace WebApp
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
           
             app.UseEndpoints(endpoints =>

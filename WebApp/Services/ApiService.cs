@@ -28,7 +28,15 @@ namespace WebApp.Services
             httpClient.BaseAddress = new Uri(_getApi.UrlApi);
             var response = await httpClient.GetAsync(url);
             string data = await response.Content.ReadAsStringAsync();
+            return data;
+        }
 
+        public async Task<string> GetApiUserAdd(string url)
+        {
+            HttpClient httpClient = _factory.CreateClient();
+            httpClient.BaseAddress = new Uri(_getApi.UrlApi);
+            var response = await httpClient.GetAsync(url);
+            string data = await response.Content.ReadAsStringAsync();
             return data;
         }
     }

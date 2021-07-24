@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph;
+using Microsoft.Graph.Auth;
+using Microsoft.Identity.Client;
+using WebAPI.ADDAzure;
+using WebAPI.InterfaceADDAzure;
 using WebAPI.Models;
+using WebAPI.Services;
+using User = WebAPI.Models.User;
 
 namespace WebAPI.Controllers
 {
@@ -13,18 +19,20 @@ namespace WebAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private readonly IUserADDAzure _userADDAzure;
         private readonly DatabaseContext _context;
-
-        public UsersController(DatabaseContext context)
+       
+        public UsersController(DatabaseContext context,IUserADDAzure userADDAzure)
         {
             _context = context;
+            _userADDAzure = userADDAzure;
+          
         }
-
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        {        
-            return await _context.Users.Include(m=>m.Role).ToListAsync();
+        {
+            return await _context.Users.Include(m => m.Role).ToListAsync();
         }
 
         // GET: api/Users/5
@@ -37,8 +45,14 @@ namespace WebAPI.Controllers
             {
                 return NotFound();
             }
-
             return user;
+        }
+
+        [HttpGet("aad/{email}")]
+        public  Task<UserAzureAdd> GetEmail(string email)                    
+        {
+            var result = _userADDAzure.GetGraphApiUser(email);
+            return result;        
         }
 
         // PUT: api/Users/5
@@ -104,6 +118,15 @@ namespace WebAPI.Controllers
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+        public async Task<ActionResult<User>> GetSqlUserId(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return user;
         }
     }
 }

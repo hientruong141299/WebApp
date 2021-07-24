@@ -8,5 +8,6 @@ namespace WebApp.Common.Constants
     public static class Constants
     {
         public static readonly string GetUserPath = "/api/users";
+      
     }
 }
