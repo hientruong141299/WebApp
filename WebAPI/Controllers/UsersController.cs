@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
 using Microsoft.Graph.Auth;
 using Microsoft.Identity.Client;
-using WebAPI.ADDAzure;
-using WebAPI.InterfaceADDAzure;
+
+using WebAPI.Interfaces;
 using WebAPI.Models;
 using WebAPI.Services;
 using User = WebAPI.Models.User;
@@ -19,13 +19,14 @@ namespace WebAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserADDAzure _userADDAzure;
+        private readonly IUserADLogic _userADLogic;
         private readonly DatabaseContext _context;
+
        
-        public UsersController(DatabaseContext context,IUserADDAzure userADDAzure)
+        public UsersController(DatabaseContext context,IUserADLogic userADLogic)
         {
             _context = context;
-            _userADDAzure = userADDAzure;
+            _userADLogic = userADLogic;
           
         }
         // GET: api/Users
@@ -51,8 +52,8 @@ namespace WebAPI.Controllers
         [HttpGet("aad/{email}")]
         public  Task<UserAzureAdd> GetEmail(string email)                    
         {
-            var result = _userADDAzure.GetGraphApiUser(email);
-            return result;        
+            var result = _userADLogic.GetUserAzureAD(email);
+            return result;
         }
 
         // PUT: api/Users/5
@@ -67,7 +68,7 @@ namespace WebAPI.Controllers
             }
 
             _context.Entry(user).State = EntityState.Modified;
-
+           
             try
             {
                 await _context.SaveChangesAsync();

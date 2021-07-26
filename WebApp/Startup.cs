@@ -41,6 +41,7 @@ namespace WebApp
             services.AddSingleton<IApiService, ApiService>();
             services.AddSingleton<IUserLogic, UserLogic>();
            
+           
           
         }
 

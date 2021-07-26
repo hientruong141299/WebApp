@@ -30,13 +30,15 @@ namespace WebApp.BusinessLogic
 
         public async Task<UserAzureAdd> GetUserAddByEmail(string email)
         {
+            //var path = string.Format(Constants.GetUserADD, email);
+            //Console.WriteLine(path);
             var response = await _apiService.GetApi($"/api/users/aad/{email}");
             var model = JsonConvert.DeserializeObject<UserAzureAdd>(response);
             return model;
         }
 
         public async Task<User> GetUserSqlById(int id)
-        {
+        {         
             var response = await _apiService.GetApi($"/api/users/{id}");
             var model = JsonConvert.DeserializeObject<User>(response);
             return model;

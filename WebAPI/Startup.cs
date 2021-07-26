@@ -16,12 +16,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebAPI.ADDAzure;
+using WebAPI.BuisinessLogic;
 using WebAPI.Common.Configuration;
-using WebAPI.InterfaceADDAzure;
+using WebAPI.Interfaces;
 using WebAPI.Models;
 using WebAPI.Services;
-using UserReadADDAzure = WebAPI.Services.UserReadADDAzure;
+
 
 namespace WebAPI
 {
@@ -51,8 +51,8 @@ namespace WebAPI
              options.UseSqlServer(
                  Configuration.GetConnectionString("DefaultConnection")));
             services.Configure<GetConnectADDAzure>(Configuration.GetSection(GetConnectADDAzure.ConnectAzureAD));
-            services.AddSingleton<IUserADDAzure, GraphApiClientDirect>();
-            services.AddSingleton<IApiPermissions, UserReadADDAzure>();
+            services.AddSingleton<IUserADLogic,UserAzureADLogic>();
+            services.AddSingleton<IGraphApiServices,GraphApiServices>();
             var contact = new OpenApiContact()
             {
                 Name = "Hien Truong",
