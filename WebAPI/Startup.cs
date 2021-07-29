@@ -1,24 +1,15 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebAPI.BuisinessLogic;
 using WebAPI.Common.Configuration;
 using WebAPI.Interfaces;
+using WebAPI.Middleware;
 using WebAPI.Models;
 using WebAPI.Services;
 
@@ -37,15 +28,6 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-            //   .AddAzureAD(options => Configuration.Bind("AzureAd", options));
-            //services.AddControllers(options =>
-            //{
-            //    var policy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .Build();
-            //    options.Filters.Add(new AuthorizeFilter(policy));
-            //});
             services.AddControllers();
             services.AddDbContext<DatabaseContext>(options =>
              options.UseSqlServer(
@@ -53,6 +35,9 @@ namespace WebAPI
             services.Configure<GetConnectADDAzure>(Configuration.GetSection(GetConnectADDAzure.ConnectAzureAD));
             services.AddSingleton<IUserADLogic,UserAzureADLogic>();
             services.AddSingleton<IGraphApiServices,GraphApiServices>();
+            services.AddSingleton<AuthTokenMiddleware>();
+            services.Configure<GetAuthToken>(Configuration.GetSection(GetAuthToken.AuthToken));
+            services.AddHttpContextAccessor();
             var contact = new OpenApiContact()
             {
                 Name = "Hien Truong",
@@ -98,6 +83,14 @@ namespace WebAPI
                 c.SwaggerEndpoint("/swagger/v1/swagger.json",
                 "Swagger Demo API v1");
             });
+            //app.Use(async (context, next) =>
+            //{
+            //    context.Request.Headers.Add("Guid", "E0FDCA56-958E-4026-AE9A-8DA4D322B91E");
+            //    await next.Invoke();
+            //});
+            //app.UseMiddleware<FirstMiddleware>();
+            app.UseMiddleware<AuthTokenMiddleware>();
+
 
             app.UseEndpoints(endpoints =>
             {

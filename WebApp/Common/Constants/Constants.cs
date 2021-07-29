@@ -8,8 +8,8 @@ namespace WebApp.Common.Constants
     public static class Constants
     {
         public static readonly string GetUserPath = "/api/users";
-        public static readonly string GetUserADD = @"/api/users/aad/{email}";
-        public static readonly string GetUserSqlById = @"/api/users/{id}";
+        public static readonly string GetUserADD = @"/api/users/aad/{0}";
+        public static readonly string GetUserSqlById = @"/api/users/{0}";
       
     }
 }

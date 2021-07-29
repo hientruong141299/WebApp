@@ -1,10 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
-using WebApp.Common.ConnectionApi;
+using WebApp.Common.Configurations;
 
 namespace WebApp.Common.Service
 {

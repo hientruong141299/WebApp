@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.Graph;
 using System.Diagnostics;
 using System.Threading.Tasks;
-
 using WebApp.Interfaces;
 using WebApp.Models;
 
@@ -12,10 +9,11 @@ namespace WebApp.Controllers
     public class HomeController : Controller
     {
         private readonly  IUserLogic _userLogic;
-      
+       
         public HomeController(IUserLogic userLogic)
         {   
             _userLogic = userLogic;
+          
         }
         public async Task<IActionResult>Index()
         {

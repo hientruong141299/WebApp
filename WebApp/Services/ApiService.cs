@@ -1,14 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebAPI.Models;
-using WebApp.Common.ConnectionApi;
-using WebApp.Common.Constants;
-using WebApp.Interfaces;
+using WebApp.Common.Configurations;
 
 namespace WebApp.Services
 {
@@ -16,17 +10,23 @@ namespace WebApp.Services
     {
         private readonly GetConnectApi _getApi;
         private IHttpClientFactory _factory;
-        public ApiService(IHttpClientFactory factory, IOptions<GetConnectApi> getApi)
+        private readonly GetAuthToken _getAuthToken;
+        public ApiService(IHttpClientFactory factory, IOptions<GetConnectApi> getApi,IOptions<GetAuthToken> getAuthToken)
         {
             _factory = factory;
             _getApi = getApi.Value;
+            _getAuthToken = getAuthToken.Value;
         }
 
         public async Task<string> GetApi(string url)
         {
             HttpClient httpClient = _factory.CreateClient();
             httpClient.BaseAddress = new Uri(_getApi.UrlApi);
-            var response = await httpClient.GetAsync(url);
+            httpClient.DefaultRequestHeaders.Accept.Clear();
+            httpClient.DefaultRequestHeaders.Add("Guid",_getAuthToken.Guid);
+            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Guid", "E0FDCA56-958E-4026-AE9A-8DA4D322B91E");
+            //httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = await httpClient.GetAsync(url); 
             string data = await response.Content.ReadAsStringAsync();
             return data;
         }

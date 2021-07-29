@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebAPI.Controllers;
 using WebApp.BusinessLogic;
-using WebApp.Common.ConnectionApi;
+using WebApp.Common.Configurations;
 using WebApp.Interfaces;
 using WebApp.Services;
 
@@ -38,6 +38,7 @@ namespace WebApp
             });
             services.AddHttpClient();
             services.Configure<GetConnectApi>(Configuration.GetSection(GetConnectApi.ConnectApi));
+            services.Configure<GetAuthToken>(Configuration.GetSection(GetAuthToken.AuthToken));
             services.AddSingleton<IApiService, ApiService>();
             services.AddSingleton<IUserLogic, UserLogic>();
            
