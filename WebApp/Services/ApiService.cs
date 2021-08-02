@@ -24,8 +24,6 @@ namespace WebApp.Services
             httpClient.BaseAddress = new Uri(_getApi.UrlApi);
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Add("Guid",_getAuthToken.Guid);
-            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Guid", "E0FDCA56-958E-4026-AE9A-8DA4D322B91E");
-            //httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var response = await httpClient.GetAsync(url); 
             string data = await response.Content.ReadAsStringAsync();
             return data;
