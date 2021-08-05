@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
 using Microsoft.Graph.Auth;
 using Microsoft.Identity.Client;
-
+using WebAPI.Authorize;
 using WebAPI.Interfaces;
 using WebAPI.Models;
 using WebAPI.Services;
@@ -18,7 +18,7 @@ using User = WebAPI.Models.User;
 
 namespace WebAPI.Controllers
 {
-   
+    [CustomAuthorization]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -35,7 +35,8 @@ namespace WebAPI.Controllers
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        {  
+        {
+            
             return await _context.Users.Include(m => m.Role).ToListAsync();
         }
 

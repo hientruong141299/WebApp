@@ -116,7 +116,7 @@ namespace WebAPI
                 c.SwaggerEndpoint("/swagger/v1/swagger.json",
                 "Swagger Demo API v1");
                 c.RoutePrefix = string.Empty;
-            });   
+            });
             //app.Map("/swagger", (app1) =>
             // {
             //     app1.Run(async (context) =>
@@ -124,7 +124,7 @@ namespace WebAPI
             //         await context.Response.WriteAsync("hello");
             //     });
             // });
-            //app.UseMiddleware<FirstMiddleware>();    
+            //app.UseMiddleware<FirstMiddleware>();
             app.UseMiddleware<AuthTokenMiddleware>();
             app.UseEndpoints(endpoints =>
             {
